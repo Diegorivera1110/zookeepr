@@ -6,6 +6,8 @@ const { animals } = require("./data/animals.json");
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+app.use(express.static('public'));
+
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
 
@@ -95,6 +97,7 @@ function validateAnimal(animal) {
   return true;
 }
 
+
 app.get("/api/animals", (req, res) => {
   let results = animals;
   if (req.query) {
@@ -102,6 +105,7 @@ app.get("/api/animals", (req, res) => {
   }
   res.json(results);
 });
+
 
 app.get("/api/animals/:id", (req, res) => {
   const result = findById(req.params.id, animals);
@@ -111,6 +115,7 @@ app.get("/api/animals/:id", (req, res) => {
     res.send(404);
   }
 });
+
 
 app.post("/api/animals", (req, res) => {
   // set id based on what the next index of the array will be
@@ -123,6 +128,23 @@ app.post("/api/animals", (req, res) => {
     const animal = createNewAnimal(req.body, animals);
     res.json(animal);
   }
+});
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+app.get('/animals', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(PORT, () => {
